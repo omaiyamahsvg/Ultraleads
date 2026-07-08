@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Elite Reader | B2B Lead Intelligence</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        gray: {
+                            900: '#111827',
+                            800: '#1f2937',
+                            700: '#374151',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-900 text-gray-100 font-sans antialiased min-h-screen flex flex-col">
+
+    <!-- Top Navigation -->
+    <header class="bg-gray-800 border-b border-gray-700 p-4 sticky top-0 z-40 shadow-md">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <h1 class="text-xl font-bold text-white tracking-wider">ELITE<span class="text-blue-500">READER</span></h1>
+            <button id="auth-btn" class="text-sm bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-md transition">Admin Login</button>
+        </div>
+    </header>
+
+    <!-- Hidden Secure Admin Gate -->
+    <section id="admin-panel" class="hidden bg-red-900/20 border-b border-red-500/50 p-4 w-full">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center">
+            <div class="mb-2 md:mb-0">
+                <span class="text-red-400 font-bold text-sm tracking-widest uppercase">Admin Override Active</span>
+                <p class="text-xs text-gray-300">Identity mapped. Full database access granted.</p>
+            </div>
+            <div class="flex gap-2">
+                <button class="bg-red-600 hover:bg-red-500 text-white text-xs px-3 py-1 rounded">Clear Cache</button>
+                <button class="bg-gray-700 hover:bg-gray-600 text-white text-xs px-3 py-1 rounded">View Logs</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow p-4 md:p-8 w-full max-w-7xl mx-auto flex flex-col gap-6">
+        
+        <!-- Semantic Search Wrapper -->
+        <div class="bg-gray-800 rounded-lg p-4 shadow-lg border border-gray-700">
+            <label for="semantic-search" class="block text-sm font-medium text-gray-400 mb-2">Smart Semantic Search</label>
+            <div class="relative">
+                <input type="text" id="semantic-search" placeholder="e.g., 'pipes', 'solar panels', 'builders'..." class="w-full bg-gray-900 border border-gray-600 rounded-md py-3 px-4 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition">
+                <div id="search-translation" class="absolute right-3 top-3 text-xs text-blue-400 font-semibold hidden">Translating...</div>
+            </div>
+        </div>
+
+        <!-- Geographic Breakdown Matrix Grid -->
+        <div class="bg-gray-800 rounded-lg p-4 shadow-lg border border-gray-700 overflow-x-auto">
+            <h2 class="text-lg font-semibold text-white mb-4">Geographic Inventory Matrix</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="bg-gray-900 p-4 rounded border border-gray-700 flex flex-col items-center justify-center">
+                    <span class="text-gray-400 text-xs uppercase">California</span>
+                    <span id="count-ca" class="text-2xl font-bold text-white mt-1">0</span>
+                </div>
+                <div class="bg-gray-900 p-4 rounded border border-gray-700 flex flex-col items-center justify-center">
+                    <span class="text-gray-400 text-xs uppercase">Texas</span>
+                    <span id="count-tx" class="text-2xl font-bold text-white mt-1">0</span>
+                </div>
+                <div class="bg-gray-900 p-4 rounded border border-gray-700 flex flex-col items-center justify-center">
+                    <span class="text-gray-400 text-xs uppercase">Florida</span>
+                    <span id="count-fl" class="text-2xl font-bold text-white mt-1">0</span>
+                </div>
+                <div class="bg-gray-900 p-4 rounded border border-gray-700 flex flex-col items-center justify-center">
+                    <span class="text-gray-400 text-xs uppercase">New York</span>
+                    <span id="count-ny" class="text-2xl font-bold text-white mt-1">0</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Live Unmasked Preview Data Tables -->
+        <div class="bg-gray-800 rounded-lg shadow-lg border border-gray-700 overflow-hidden flex-grow">
+            <div class="p-4 border-b border-gray-700 flex justify-between items-center">
+                <h2 class="text-lg font-semibold text-white">Live Lead Preview</h2>
+                <button id="unlock-data-btn" class="bg-green-600 hover:bg-green-500 text-white text-sm px-4 py-2 rounded shadow transition">Unlock Full Data</button>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm text-gray-300">
+                    <thead class="bg-gray-900 text-gray-400 uppercase text-xs">
+                        <tr>
+                            <th class="px-4 py-3">Business Name</th>
+                            <th class="px-4 py-3">Industry</th>
+                            <th class="px-4 py-3">Location</th>
+                            <th class="px-4 py-3">Contact</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leads-table-body" class="divide-y divide-gray-700">
+                        <!-- Javascript will inject rows here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- Hardlocked USDT ERC-20 Payment Gateway Modal -->
+    <div id="payment-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-gray-800 border border-gray-700 rounded-xl shadow-2xl w-full max-w-md overflow-hidden">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-bold text-white">Unlock Full Database</h3>
+                    <button id="close-payment" class="text-gray-400 hover:text-white text-2xl">&times;</button>
+                </div>
+                <p class="text-sm text-gray-400 mb-6">Send exact USDT amount via the ERC-20 network to the smart contract vault to instantly unlock your inventory allocation.</p>
+                
+                <div class="bg-gray-900 p-4 rounded border border-gray-700 mb-4 text-center">
+                    <span class="block text-xs text-gray-500 uppercase tracking-widest mb-1">Network</span>
+                    <span class="block text-lg font-bold text-green-400 mb-4">Ethereum (ERC-20)</span>
+                    
+                    <span class="block text-xs text-gray-500 uppercase tracking-widest mb-1">Vault Address</span>
+                    <code class="block text-sm text-blue-300 break-all bg-gray-800 p-2 rounded selection:bg-blue-900">0x3759E7B9987Ab765D4EbFBf58EBf63e7D5664819</code>
+                </div>
+
+                <div class="mt-6 flex flex-col gap-3">
+                    <input type="text" id="tx-hash-input" placeholder="Paste Transaction Hash (TxHash)" class="w-full bg-gray-900 border border-gray-600 rounded py-2 px-3 text-white text-sm focus:outline-none focus:border-blue-500">
+                    <button id="verify-tx-btn" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded transition shadow-lg">Verify Transaction</button>
+                    <p id="tx-status" class="text-xs text-center text-red-400 hidden"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Auth Modal (For Admin Login) -->
+    <div id="auth-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-gray-800 border border-gray-700 rounded-xl shadow-2xl w-full max-w-sm p-6">
+            <h3 class="text-xl font-bold text-white mb-4">System Authentication</h3>
+            <input type="email" id="auth-email" placeholder="Email address" class="w-full bg-gray-900 border border-gray-600 rounded py-2 px-3 text-white mb-3 focus:outline-none focus:border-blue-500">
+            <input type="password" id="auth-password" placeholder="Password" class="w-full bg-gray-900 border border-gray-600 rounded py-2 px-3 text-white mb-4 focus:outline-none focus:border-blue-500">
+            <button id="login-submit-btn" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 rounded transition">Authenticate</button>
+            <button id="close-auth" class="w-full text-gray-400 hover:text-white mt-4 text-sm">Cancel</button>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
