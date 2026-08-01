@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UltraLeads | Premium B2B Intelligence Hub</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Top Bar Notice -->
+    <header class="top-bar">
+        <div class="container top-bar-content">
+            <div class="brand">
+                <span class="logo-icon">⚡</span>
+                <span class="logo-text">Ultra<strong>Leads</strong></span>
+                <span class="badge-live">LIVE</span>
+            </div>
+            <div class="inventory-counter">
+                <span class="counter-label">Total Verified Inventory:</span>
+                <span id="total-inventory-count" class="counter-value">0</span>
+                <span class="counter-unit">Leads</span>
+            </div>
+            <div class="user-vault-status">
+                <span id="vault-credits-display" class="credits-badge">0 Credits</span>
+                <button id="open-checkout-btn" class="btn btn-primary-sm">Get Credits</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container main-content">
+        <!-- Hero Search Section -->
+        <section class="search-hero">
+            <h1 class="hero-title">High-Intent B2B Lead Intelligence</h1>
+            <p class="hero-subtitle">Direct emails, phone numbers, and verified corporate profiles scraped & enriched daily.</p>
+            
+            <div class="search-box-wrapper">
+                <div class="search-input-group">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="search-input" placeholder="Search by intent, niche (e.g. 'pipes', 'solar', 'legal')..." autocomplete="off">
+                    <button id="search-btn" class="btn btn-accent">Search Leads</button>
+                </div>
+                <!-- Dynamic Autocomplete Suggestions Dropdown -->
+                <div id="autocomplete-dropdown" class="autocomplete-box hidden"></div>
+            </div>
+
+            <!-- Geographic & Intent Filters -->
+            <div class="filter-matrix">
+                <div class="filter-group">
+                    <label>Market Tier:</label>
+                    <select id="tier-filter">
+                        <option value="all">All Market Tiers</option>
+                        <option value="tier1" selected>Tier 1 Western Markets (USA, UK, CA, AU)</option>
+                        <option value="emerging">Emerging Markets</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Target Country:</label>
+                    <select id="country-filter">
+                        <option value="all">All Countries</option>
+                        <option value="USA">United States</option>
+                        <option value="GBR">United Kingdom</option>
+                        <option value="CAN">Canada</option>
+                        <option value="AUS">Australia</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Category:</label>
+                    <select id="category-filter">
+                        <option value="all">All Verticals</option>
+                        <option value="Plumbers">Plumbers & HVAC</option>
+                        <option value="Solar">Clean Energy / Solar</option>
+                        <option value="Legal">Legal & Corporate Services</option>
+                        <option value="Real Estate">Real Estate Brokers</option>
+                    </select>
+                </div>
+            </div>
+        </section>
+
+        <!-- Live Proof Stream -->
+        <section class="proof-stream-section">
+            <div class="section-header">
+                <h2>⚡ Live Ingestion Stream</h2>
+                <span class="stream-pulse"></span>
+                <span class="subtext">Real-time leads verified by Frankfurt ingestion workers</span>
+            </div>
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Captured</th>
+                            <th>Company / Niche</th>
+                            <th>Location</th>
+                            <th>Verification Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="proof-stream-table">
+                        <!-- Dynamically populated via app.js -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Main Search Results Display -->
+        <section class="results-section">
+            <div class="section-header">
+                <h2>Database Drill-Down Matrix</h2>
+                <span id="results-count-label" class="subtext">Showing available inventory</span>
+            </div>
+
+            <div class="table-responsive">
+                <table class="data-table results-table">
+                    <thead>
+                        <tr>
+                            <th>Company Name</th>
+                            <th>Niche / Intent</th>
+                            <th>Location</th>
+                            <th>Corporate Email</th>
+                            <th>Phone Number</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="results-table-body">
+                        <!-- Dynamically populated via app.js -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <!-- Payment & Credit Vault Modal -->
+    <div id="checkout-modal" class="modal-backdrop hidden">
+        <div class="modal-card">
+            <button id="close-modal-btn" class="modal-close">&times;</button>
+            <div class="modal-header">
+                <h3>USDT ERC-20 Credit Top-Up</h3>
+                <p>Select a credit package to unlock full unmasked leads immediately.</p>
+            </div>
+            <div class="modal-body">
+                <!-- Package Selection Grid -->
+                <div class="package-grid">
+                    <div class="package-card selected" data-credits="1000" data-price="25">
+                        <div class="pkg-name">Starter Vault</div>
+                        <div class="pkg-credits">1,000 Credits</div>
+                        <div class="pkg-price">$25 USDT</div>
+                    </div>
+                    <div class="package-card" data-credits="5000" data-price="100">
+                        <div class="pkg-badge">POPULAR</div>
+                        <div class="pkg-name">Pro Marketer</div>
+                        <div class="pkg-credits">5,000 Credits</div>
+                        <div class="pkg-price">$100 USDT</div>
+                    </div>
+                    <div class="package-card" data-credits="15000" data-price="250">
+                        <div class="pkg-name">Agency Scale</div>
+                        <div class="pkg-credits">15,000 Credits</div>
+                        <div class="pkg-price">$250 USDT</div>
+                    </div>
+                </div>
+
+                <!-- Settlement Details Box -->
+                <div class="settlement-box">
+                    <div class="settlement-row">
+                        <span>Package Subtotal:</span>
+                        <span id="summary-subtotal">$25.00 USDT</span>
+                    </div>
+                    <div class="settlement-row">
+                        <span>Est. Network Transfer Fee:</span>
+                        <span id="summary-gas-fee">$4.50 USDT</span>
+                    </div>
+                    <hr class="divider">
+                    <div class="settlement-row total-row">
+                        <span>Total Payable (USDT ERC-20):</span>
+                        <span id="summary-total-payable">$29.50 USDT</span>
+                    </div>
+
+                    <div class="wallet-display">
+                        <label>Deposit Vault Address (Ethereum Mainnet):</label>
+                        <div class="wallet-address-box">
+                            <input type="text" id="target-wallet-address" value="0x641c46b67c53b86d748af5a85137700fa893ba48" readonly>
+                            <button id="copy-wallet-btn" class="btn btn-secondary-sm">Copy</button>
+                        </div>
+                        <span class="warning-text">⚠️ Send only USDT (ERC-20). Alternate chains will result in lost funds.</span>
+                    </div>
+
+                    <!-- Hash Submission Workflow -->
+                    <div class="hash-submission-area">
+                        <button id="toggle-hash-input-btn" class="btn btn-success-block">I Have Paid</button>
+                        
+                        <div id="hash-input-wrapper" class="hash-wrapper hidden">
+                            <label for="tx-hash-input">Paste Ethereum Transaction Hash (tx_hash):</label>
+                            <input type="text" id="tx-hash-input" placeholder="0x..." autocomplete="off">
+                            <button id="submit-hash-btn" class="btn btn-primary-block">Verify & Claim Credits</button>
+                            <div id="verification-status" class="status-message hidden"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer container">
+        <p>&copy; 2026 UltraLeads Network. All Rights Reserved. Fully Encrypted & Verified Operations.</p>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+  </html>
+  
